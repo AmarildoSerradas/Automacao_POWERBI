@@ -2,7 +2,7 @@
 echo ===== INICIANDO AUTOMACAO =====
 cd /d "C:\Users\TI LOCAL\Documents\projetoBckp\projetos"
 
-"C:\Users\TI LOCAL\Documents\projetoBckp\projetos\venv\Scripts\python.exe" "C:\Users\TI LOCAL\Documents\projetoBckp\projetos\CFC PAR AGUA.py" > log.txt 2>&1
+"C:\Users\TI LOCAL\Documents\projetoBckp\projetos\venv\Scripts\python.exe" "C:\Users\TI LOCAL\Documents\projetoBckp\projetos\campanha cfc + água + P.A.R.py.py" > log.txt 2>&1
 
 
 echo ===== SCRIPT FINALIZADO =====
