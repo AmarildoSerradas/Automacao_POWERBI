@@ -48,6 +48,30 @@ PASTA3 = BASE_DIR / "Água"
 PASTA.mkdir(exist_ok=True)
 PASTA2.mkdir(exist_ok=True)
 PASTA3.mkdir(exist_ok=True)
+for arquivo in PASTA.glob("*.jpg"):
+    if arquivo.name != "CAPA.jpg":
+        try:
+            arquivo.unlink()
+            print(f"Removido: {arquivo.name}")
+        except Exception as e:
+            print(f"Erro ao remover {arquivo.name}: {e}")
+
+for arquivo in PASTA2.glob("*.jpg"):
+    if arquivo.name != "CAPA.jpg":
+        try:
+            arquivo.unlink()
+            print(f"Removido: {arquivo.name}")
+        except Exception as e:
+            print(f"Erro ao remover {arquivo.name}: {e}")
+
+for arquivo in PASTA3.glob("*.jpg"):
+    if arquivo.name != "CAPA.jpg":
+        try:
+            arquivo.unlink()
+            print(f"Removido: {arquivo.name}")
+        except Exception as e:
+            print(f"Erro ao remover {arquivo.name}: {e}")
+
 
 # ================= PLAYWRIGHT =================
 
@@ -72,10 +96,12 @@ with sync_playwright() as pw:
     pagina.get_by_role("region", name="Relatório do Power BI").screenshot(path=PASTA / "geral.png")
 
     for loja in lojas:
-        pagina.get_by_role("option", name=loja).click()
-        time.sleep(3)
-        pagina.get_by_role("region", name="Relatório do Power BI").screenshot(path=PASTA / f"{loja}.png")
-
+        try:
+            pagina.get_by_role("checkbox", name=loja).click()
+            time.sleep(3)
+            pagina.get_by_role("region", name="Relatório do Power BI").screenshot(path=PASTA / f"{loja}.png")
+        except:
+            pass
     # ================= CONVERSÃO CFC ================= 
 
     for caminho in PASTA.glob("*.*"):
@@ -94,22 +120,21 @@ with sync_playwright() as pw:
     pagina2.goto("https://web.whatsapp.com/")
     time.sleep(10)
 
-    pagina2.get_by_role("tab", name="Grupos").click()
-    pagina2.get_by_role("paragraph").fill("CFC DE")
-    pagina2.get_by_text("CFC DEV").click()
+    pagina2.locator("div[contenteditable='true']").first.fill("frente de caix")
+    pagina2.get_by_title("Frente de Caixa - Varandas", exact=True).first.click()
     time.sleep(3)
 
     imagens_cfc = sorted(PASTA.glob("*.jpg"))
 
     for img in imagens_cfc:
         copiar_imagem_para_clipboard(img)
-        time.sleep(0.5)
+        time.sleep(5)
 
         pagina2.keyboard.press("Control+V")
-        time.sleep(1)
+        time.sleep(4)
 
         pagina2.keyboard.press("Enter")
-        time.sleep(1.5)
+        time.sleep(5)
 
     # ================= POWER BI - PAR =================
 
@@ -139,10 +164,12 @@ with sync_playwright() as pw:
 
 
     for loja in lojas:
-        pagina3.get_by_title(loja).click()
-        time.sleep(4)
-        pagina3.get_by_role("region", name="Relatório do Power BI").screenshot(path=PASTA2 / f"{loja}.png")
-
+        try:
+            pagina3.get_by_title(loja).click()
+            time.sleep(4)
+            pagina3.get_by_role("region", name="Relatório do Power BI").screenshot(path=PASTA2 / f"{loja}.png")
+        except: 
+            pass
     # ================= CONVERSÃO PAR =================
 
     for caminho in PASTA2.glob("*.*"):
@@ -160,22 +187,21 @@ with sync_playwright() as pw:
     pagina2.goto("https://web.whatsapp.com/")
     time.sleep(5)
 
-    pagina2.get_by_role("tab", name="Grupos").click()
-    pagina2.get_by_role("paragraph").fill("PAR DE")
-    pagina2.get_by_text("PAR DEV").click()
+    pagina2.locator("div[contenteditable='true']").first.fill("Segurança")
+    pagina2.get_by_title("Segurança P.A.R.", exact=True).first.click()
     time.sleep(3)
 
     imagens_par = sorted(PASTA2.glob("*.jpg"))
 
     for img in imagens_par:
         copiar_imagem_para_clipboard(img)
-        time.sleep(0.5)
+        time.sleep(5)
 
         pagina2.keyboard.press("Control+V")
-        time.sleep(1)
+        time.sleep(4)
 
         pagina2.keyboard.press("Enter")
-        time.sleep(1.5)
+        time.sleep(5)
 
     pagina4 = navegador.new_page()
     pagina4.goto("https://app.powerbi.com/view?r=eyJrIjoiOTVlNDMwMDEtNjFmMi00NWVkLTgyYzEtNmFhMzUwNzgwZGY0IiwidCI6ImQ3ZTVjZGNiLWE0YTYtNDcyZC1hZWFhLTU4NDZiYTZiYmVhZSJ9")
@@ -185,10 +211,15 @@ with sync_playwright() as pw:
         pagina4.get_by_test_id("thumbnail-image").click()
     except:
         pass
-
-    pagina4.get_by_text(ano).click()
-    pagina4.get_by_role("combobox", name="Mês").click()
-    pagina4.get_by_text(mes_atual).click()
+    try:
+        pagina4.get_by_text(ano).click()
+    except:
+        pass
+    try:
+        pagina4.get_by_role("combobox", name="Mês").click()
+        pagina4.get_by_text(mes_atual).click()
+    except:
+        pass
     pagina4.get_by_role("columnheader", name="Dia").click()
     time.sleep(2)
     pagina4.get_by_role("region", name="Relatório do Power BI").screenshot(path=PASTA3 / f"Loja.png")
@@ -225,22 +256,21 @@ with sync_playwright() as pw:
     pagina2.goto("https://web.whatsapp.com/")
     time.sleep(5)
 
-    pagina2.get_by_role("tab", name="Grupos").click()
-    pagina2.get_by_role("paragraph").fill("PAR")
-    pagina2.get_by_text("PAR DEV").click()
+    pagina2.locator("div[contenteditable='true']").first.fill("Varandas grupo loja")
+    pagina2.get_by_title("Varandas grupo lojas", exact=True).first.click()
     time.sleep(3)
 
     imagens_água = sorted(PASTA3.glob("*.jpg"))
 
     for img in imagens_água:
         copiar_imagem_para_clipboard(img)
-        time.sleep(0.5)
+        time.sleep(5)
 
         pagina2.keyboard.press("Control+V")
-        time.sleep(1)
+        time.sleep(4)
 
         pagina2.keyboard.press("Enter")
-        time.sleep(1.5)
+        time.sleep(5)
 
 
 
